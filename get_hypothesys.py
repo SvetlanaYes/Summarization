@@ -6,17 +6,18 @@ import csv
 import sys
 
 """
-Parameters:
+Discription:
+
+This code gets texts from given files and extracts summaries(1,2,3 sentences) using given model.
+
+Arguments:
 
 argv[1] -> file of filenames
 argv[2] -> model name
 argv[3] -> csv filename to save results
 
-Discription:
-
-This code gets texts from given files and extracts summaries(1,2,3 sentences) using given model.
-
 """
+
 model = ''
 keys = ['id', 'hypothesis_1', 'hypothesis_2', 'hypothesis_3']
 sample = {
@@ -30,7 +31,11 @@ csv_filename = ''
 
 def set_model(bert_model):
     """
+    Discription:
     Function sets Summarizer custom_model = given model and custom_tokenizer = Autotokenizer.from_pretrained(given model)
+    
+    Arguments:
+    bert_model - given name model
     """
     global model
     logging.set_verbosity_error()
@@ -43,7 +48,12 @@ def set_model(bert_model):
 
 def write_to_csv():
     """
+    Discription:
     Function to save list of exracted sentences in csv file
+    1st row - name of file
+    2nd row - list of extracted summaries with 1 sentence
+    3rd row - list of extracted summaries with 2 sentences
+    4th row - list of extracted summaries with 3 sentences
     """
     global sample, csv_filename
     with open(csv_filename, "w", encoding='utf-8') as outfile:
@@ -54,10 +64,18 @@ def write_to_csv():
 
 def process_text(filename):
     """
+    Discription:
     Function processed texts in given files.
+
+    Arguments:
+    filename - absolute path of file with text and title.
+
     File format is json:
     ['src'] - text
     ['tgt'] - text title 
+
+    Returning value: string
+    Returns: processed text
     """
     with open(filename, 'r') as d:
         content_of_file = json.load(d)
@@ -74,7 +92,14 @@ def process_text(filename):
 
 def get_filenames(names):
     """
-    Function gets filenames from given file
+    Discription:
+    Function gets test filenames from given file
+
+    Arguments:
+    names - file with test filenames
+
+    Returning value: list
+    Retruns: test filenames
     """
     with open(names, 'r') as f:
       filenames = f.readlines()
@@ -83,7 +108,11 @@ def get_filenames(names):
 
 def get_hypothesis(names):
     """
-    Function extracts summaries of texts from given files
+    Discription:
+    Function extracts summaries from texts 
+
+    Arguments:
+    names - file with test filenames
     """
     global sample
     count = 0
