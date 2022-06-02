@@ -5,6 +5,18 @@ import os
 import csv
 import sys
 
+"""
+Parameters:
+
+argv[1] -> file of filenames
+argv[2] -> model name
+argv[3] -> csv filename to save results
+
+Discription:
+
+This code gets texts from given files and extracts summaries(1,2,3 sentences) using given model.
+
+"""
 model = ''
 keys = ['id', 'hypothesis_1', 'hypothesis_2', 'hypothesis_3']
 sample = {
@@ -17,6 +29,9 @@ csv_filename = ''
 
 
 def set_model(bert_model):
+    """
+    Function sets Summarizer custom_model = given model and custom_tokenizer = Autotokenizer.from_pretrained(given model)
+    """
     global model
     logging.set_verbosity_error()
     custom_config = AutoConfig.from_pretrained(bert_model)
@@ -27,6 +42,9 @@ def set_model(bert_model):
 
 
 def write_to_csv():
+    """
+    Function to save list of exracted sentences in csv file
+    """
     global sample, csv_filename
     with open(csv_filename, "w", encoding='utf-8') as outfile:
         writer = csv.writer(outfile, delimiter="\t")
@@ -35,6 +53,12 @@ def write_to_csv():
 
 
 def process_text(filename):
+    """
+    Function processed texts in given files.
+    File format is json:
+    ['src'] - text
+    ['tgt'] - text title 
+    """
     with open(filename, 'r') as d:
         content_of_file = json.load(d)
     src = content_of_file['src']
@@ -47,27 +71,31 @@ def process_text(filename):
     return processed_text
 
 
-def append_to_sample(filename, text):
-    global sample
-    sample['id'].append(filename)
-    sample['hypothesis_1'].append(model(text, num_sentences=1))
-    sample['hypothesis_2'].append(model(text, num_sentences=2))
-    sample['hypothesis_3'].append(model(text, num_sentences=3))
-
 
 def get_filenames(names):
+    """
+    Function gets filenames from given file
+    """
     with open(names, 'r') as f:
       filenames = f.readlines()
     return filenames
 
 
 def get_hypothesis(names):
+    """
+    Function extracts summaries of texts from given files
+    """
+    global sample
     count = 0
     filenames = get_filenames(names)
     for file in filenames:
        absolute_file_path = '/home/lab/Desktop/test_10000/' + file.strip()
        if os.path.exists(absolute_file_path):
-          text = process_text(absolute_file_path)
+            text = process_text(absolute_file_path)
+            sample['id'].append(file)
+            sample['hypothesis_1'].append(model(text, num_sentences=1))
+            sample['hypothesis_2'].append(model(text, num_sentences=2))
+            sample['hypothesis_3'].append(model(text, num_sentences=3))
           append_to_sample(file, text)
     write_to_csv()
 

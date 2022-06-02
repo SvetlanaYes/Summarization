@@ -32,22 +32,23 @@ def compute_rouge(hypothesis_folder):
         for row in csvreader:
             file_path = folder_names[row[0][0]] + row[0].strip()
             text = process_text(file_path)
-            text = text[:3]
             if os.path.exists(file_path):
                 if len(text) > 0:
                     total_count += 1
-                    matches_top_sentences = 0
+                    matches_top_sentences = True
                     hypothesis = row[3].split(" ։ ")
                     # hypothesis = row[3].split(" ։") for summa_summrizer
-                    for hypothesis_sentence in hypothesis:
-                        for text_sentence in text:
-                            processed_summary = text_sentence.replace("։", ":").strip()[:-1]
-                            processed_hypothesis = hypothesis_sentence.replace("։", ":").strip()
-                            if processed_hypothesis in processed_summary or processed_summary in processed_hypothesis:
-                                matches_top_sentences += 1
+                    if len(text) < len(hypothesis):
+                        continue
+                    else:
+                        for i, sentence in enumerate(hypothesis):
+                            processed_summary = text[i].replace("։", ":").strip()[:-1]
+                            processed_hypothesis = sentence.replace("։", ":").strip()
+                            if (processed_hypothesis not in processed_summary
+                                    and processed_summary not in processed_hypothesis):
+                                matches_top_sentences = False
                                 break
-                    if matches_top_sentences == len(hypothesis):
-                            count += 1
+                        count += int(matches_top_sentences)
         print(round(count * 100 / total_count, 4), "%")
 
 
