@@ -8,7 +8,7 @@ import sys
 """
 Discription:
 
-This code for every text example computes rouge of extracted summary and title.
+This code computes rouge of extracted summary and title for every text example.
 Prints average of rouge_1, rouge_2, rouge_l
 
 Arguments:
