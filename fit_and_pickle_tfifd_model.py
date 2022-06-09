@@ -1,3 +1,4 @@
+# TODO: refactor and improve code
 from sklearn.feature_extraction.text import TfidfVectorizer
 import sys
 import pickle
