@@ -3,13 +3,20 @@ import csv
 import os
 import json
 import sys
+from configparser import ConfigParser
 
-folder_names = {
-    '1': '/home/lab/Desktop/data/Tokenized/168tokenized/',
-    'A': '/home/lab/Desktop/data/Tokenized/aravot_tokenized/',
-    'I': '/home/lab/Desktop/data/Tokenized/Infocom_token/',
-    'T': '/home/lab/Desktop/data/Tokenized/tokenized/'
-}
+'''
+Discription:
+This code computes % of first 3 sentences in extracted summaries in the right order
+
+Arguments:
+argv[1] - folder with extracted summaries
+'''
+
+file = 'config.ini'
+config = ConfigParser()
+config.optionxform = lambda option: option
+config.read(file)
 
 
 def process_text(filename):
@@ -23,15 +30,14 @@ def process_text(filename):
     return processed_text
 
 
-def compute_rouge(hypothesis_folder):
-    global sentence_numbers
+def compute_percent_of_first_sentences(hypothesis_folder):
     with open(hypothesis_folder, encoding='utf-8') as file:
         csvreader = csv.reader(file, delimiter='\t')
         next(csvreader)
         count = 0
         total_count = 0
         for row in csvreader:
-            file_path = folder_names[row[0][0]] + row[0].strip()
+            file_path = config['folder_names'][row[0][0]] + row[0].strip()
             text = process_text(file_path)
             if os.path.exists(file_path):
                 if len(text) > 0:
@@ -58,8 +64,7 @@ def main():
         print("Specify correct arguments! \n[hypothesis folder]")
         return
     hypothesis_folder = sys.argv[1]
-    compute_rouge(hypothesis_folder)
+    compute_percent_of_first_sentences(hypothesis_folder)
 
 
 main()
-

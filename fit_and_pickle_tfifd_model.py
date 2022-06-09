@@ -1,4 +1,3 @@
-# TODO: refactor and improve code
 from sklearn.feature_extraction.text import TfidfVectorizer
 import sys
 import pickle
@@ -11,39 +10,26 @@ Arguments:
 argv[1] - file with train filenames
 argv[2] - file to pickle model
 '''
-path = ''
-filename = ''
-vectorizer = TfidfVectorizer()
-folder_names = {
-    '1': '/home/lab/Desktop/data/Tokenized/168tokenized/',
-    'A': '/home/lab/Desktop/data/Tokenized/aravot_tokenized/',
-    'I': '/home/lab/Desktop/data/Tokenized/Infocom_token/',
-    'T': '/home/lab/Desktop/data/Tokenized/tokenized/'
-}
 
 
-def get_filenames():
-    global path
-    with open(path, 'r') as f:
+def get_filenames(filepath):
+    with open(filepath, 'r') as f:
         list_of_names = f.readlines()
-    print(len(list_of_names))
     return list_of_names
 
 
-def fit_tf_idf_vectorizer():
-    filenames = get_filenames()
-    vectorizer.fit(filenames)
-    pickle.dump(vectorizer, open(filename, 'wb'))
+def fit_tf_idf_vectorizer(fit_vectorizer_path, train_filenames):
+    vectorizer = TfidfVectorizer()
+    vectorizer.fit(train_filenames)
+    pickle.dump(vectorizer, open(fit_vectorizer_path, 'wb'))
 
 
 def main():
-    global path, filename
     if len(sys.argv) != 3:
-        print("Specify correct arguments! \n[train filenames]")
-    path = sys.argv[1]
-    filename = sys.argv[2]
-    fit_tf_idf_vectorizer()
+        print("Specify correct arguments! \n[train filenames] [file to pickle model] \n")
+    train_filenames = get_filenames(sys.argv[1])
+    fit_vectorizer_path = sys.argv[2]
+    fit_tf_idf_vectorizer(fit_vectorizer_path, train_filenames)
 
 
 main()
-

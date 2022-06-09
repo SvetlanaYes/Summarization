@@ -1,4 +1,3 @@
-# TODO: refactor and improve code
 import json
 import pickle
 import os
@@ -17,15 +16,6 @@ argv[3] - absolute path of directory which contains lemmatized texts
 argv[4] - count of sentences to extract as summary
 """
 
-pwd = os.getcwd()
-test_filenames = '/home/lab/Desktop/bert_distilBert/files/test_rand_10000.txt'
-test_files_directory = '/home/lab/Desktop/test_10000/'
-tf_idf_model = ''
-sample = {
-           1: [0, 0, 0, 0],
-           2: [0, 0, 0, 0],
-           3: [0, 0, 0, 0]
-          }
 
 
 def process_title(text):
@@ -48,7 +38,7 @@ def rouge_score(hypothesis, summary):
     return score
 
 
-def print_results():
+def print_results(sample):
     for key in sample:
         print(key)
         print("rouge_1 - ", sample[key][0] / sample[key][3])
@@ -88,18 +78,22 @@ def process_lemma(text):
     return processed_text
 
 
-def compute_rouge(hypothesis, title):
-    global sample
+def compute_rouge(hypothesis, title, sample):
     for i, sentence in enumerate(hypothesis):
         score = rouge_score(sentence, title)
         sample[i + 1][0] += score["rouge-1"]["f"]
         sample[i + 1][1] += score["rouge-2"]["f"]
         sample[i + 1][2] += score["rouge-l"]["f"]
         sample[i + 1][3] += 1
+    return sample
 
 
-def extract_summary():
-    global tf_idf_model, test_filenames, test_files_directory
+def extract_summary(tf_idf_model, test_filenames, test_files_directory):
+    sample = {
+        1: [0, 0, 0, 0],
+        2: [0, 0, 0, 0],
+        3: [0, 0, 0, 0]
+    }
     for i, file in enumerate(test_filenames):
         full_path = test_files_directory + file.strip()
         with open(full_path, 'r') as f:
@@ -116,12 +110,11 @@ def extract_summary():
             continue
         if len(lemma[-1]) == 0:
             lemma.pop()
-
         for sentence in lemma:
             proc_sentence = process_sentence(sentence)
             with open('tmp.txt', 'w') as t:
                 t.write(proc_sentence)
-            tmp_file = [pwd + '/tmp.txt']
+            tmp_file = [os.getcwd() + '/tmp.txt']
             word_scores = tf_idf_model.transform(tmp_file)
             total = np.sum(word_scores.toarray())
             scores.append(total)
@@ -129,21 +122,19 @@ def extract_summary():
         if len(hypothesis) == 0:
             continue
         title = process_title(content_of_file['tgt'])
-        compute_rouge(hypothesis, title)
+        sample = compute_rouge(hypothesis, title, sample)
+    return sample
 
 
 def main():
-    global tf_idf_model, test_filenames, test_files_directory
     if len(sys.argv) != 4:
         print("Specify correct arguments! \n [tfidf model] [test filenames] [absolute path of test files directory]\n")
         return
-
     tf_idf_model = load_model(sys.argv[1])
     test_filenames = get_test_filenames(sys.argv[2])
     test_files_directory = sys.argv[3]
-    extract_summary()
-    print_results()
+    tf_idf_rouge_scores = extract_summary(tf_idf_model, test_filenames, test_files_directory)
+    print_results(tf_idf_rouge_scores)
 
 
 main()
-

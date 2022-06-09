@@ -1,10 +1,9 @@
-# TODO: refactor and improve code
 import csv
 import os
 import json
 from rouge import Rouge
 import sys
-
+from configparser import ConfigParser
 
 """
 Discription:
@@ -25,17 +24,10 @@ hypothesis file format is csv
     4th row contains extracted summary with 3 sentences
 """
 
-hypothesis_folder = ''
-folder_names = {
-    '1': '/home/lab/Desktop/data/Tokenized/168tokenized/',
-    'A': '/home/lab/Desktop/data/Tokenized/aravot_tokenized/',
-    'I': '/home/lab/Desktop/data/Tokenized/Infocom_token/',
-    'T': '/home/lab/Desktop/data/Tokenized/tokenized/'
-}
-count = 0
-rouge_1 = 0
-rouge_2 = 0
-rouge_l = 0
+file = 'config.ini'
+config = ConfigParser()
+config.optionxform = lambda option: option
+config.read(file)
 
 
 def get_title(filename):
@@ -66,19 +58,18 @@ def rouge_score(hypothesis, title):
     return score
 
 
-def add_new_score(score):
-    global rouge_1, rouge_2, rouge_l
+def add_new_score(score, rouge_1, rouge_2, rouge_l):
     rouge_1 += score['rouge-1']['f']
     rouge_2 += score['rouge-2']['f']
     rouge_l += score['rouge-l']['f']
+    return rouge_1, rouge_2, rouge_l
 
 
-def print_results():
+def print_results(rouge_1, rouge_2, rouge_l, count):
     """
     Discription:
     Function prints average of rouge_1 rouge_2 rouge_l
     """
-    global rouge_1, rouge_2, rouge_l, count
     print("rouge_1 - ", rouge_1 / count)
     print("rouge_2 - ", rouge_2 / count)
     print("rouge_l - ", rouge_l / count)
@@ -99,9 +90,6 @@ def read_csv_file(hypothesis_folder):
     [2] - hypothesis with 2 sentences
     [3] - hypothesis with 3 sentences
     """
-    with open(hypothesis_folder, encoding='utf-8') as file:
-        csvreader = csv.reader(file, delimiter='\t')
-    return csvreader
 
 
 def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
@@ -113,21 +101,26 @@ def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
     hypothesis_folder - csv file
     count_of_extracted_sentences - count of extracted sentences from text (1,2,3)
     """
-    csvreader = read_csv_file(hypothesis_folder)
-    next(csvreader)
-    for row in csvreader:
-        hypothesis = row[count_of_extracted_sentences]
-        absolute_file_path = folder_names[row[0][0]] + row[0].strip()
-        if os.path.exists(absolute_file_path):
-            title = get_title(absolute_file_path)
-            try:
-                score = rouge_score(hypothesis, title)
-            except ValueError:
-                """this error occures when original text is empty"""
-                continue
-            add_new_score(score)
-            count += 1
-    print_results()
+    count = 0
+    rouge_1 = 0
+    rouge_2 = 0
+    rouge_l = 0
+    with open(hypothesis_folder, encoding='utf-8') as file:
+        csvreader = csv.reader(file, delimiter='\t')
+        next(csvreader)
+        for row in csvreader:
+            hypothesis = row[count_of_extracted_sentences]
+            absolute_file_path = config['folder_names'][row[0][0]] + row[0].strip()
+            if os.path.exists(absolute_file_path):
+                title = get_title(absolute_file_path)
+                try:
+                    score = rouge_score(hypothesis, title)
+                except ValueError:
+                    """this error occures when original text is empty"""
+                    continue
+                rouge_1, rouge_2, rouge_l = add_new_score(score, rouge_1, rouge_2, rouge_l)
+                count += 1
+    print_results(rouge_1, rouge_2, rouge_l, count)
 
 
 def main():
@@ -135,8 +128,8 @@ def main():
         print("Specify correct arguments! \n[hypothesis folder], [count of extracted sentences]\n")
         return
     hypothesis_folder = sys.argv[1]
-    count_of_extracted_sentences = sys.argv[2]
+    count_of_extracted_sentences = int(sys.argv[2])
     compute_rouge(hypothesis_folder, count_of_extracted_sentences)
-    
+
 
 main()

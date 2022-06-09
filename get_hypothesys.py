@@ -1,4 +1,3 @@
-# TODO: refactor and improve code
 from transformers import logging, AutoConfig, AutoTokenizer, AutoModel
 from summarizer import Summarizer
 import json
@@ -20,14 +19,6 @@ argv[3] -> csv filename to save results
 """
 
 model = ''
-keys = ['id', 'hypothesis_1', 'hypothesis_2', 'hypothesis_3']
-sample = {
-          "id": [],
-          "hypothesis_1": [],
-          "hypothesis_2": [],
-          "hypothesis_3": []
-          }
-csv_filename = ''
 
 
 def set_model(bert_model):
@@ -47,7 +38,7 @@ def set_model(bert_model):
     model = Summarizer(custom_model=custom_model, custom_tokenizer=custom_tokenizer)
 
 
-def write_to_csv():
+def write_to_csv(csv_filename, sample):
     """
     Discription:
     Function to save list of exracted sentences in csv file
@@ -56,7 +47,7 @@ def write_to_csv():
     3rd row - list of extracted summaries with 2 sentences
     4th row - list of extracted summaries with 3 sentences
     """
-    global sample, csv_filename
+    keys = ['id', 'hypothesis_1', 'hypothesis_2', 'hypothesis_3']
     with open(csv_filename, "w", encoding='utf-8') as outfile:
         writer = csv.writer(outfile, delimiter="\t")
         writer.writerow(keys)
@@ -107,7 +98,7 @@ def get_filenames(names):
     return filenames
 
 
-def get_hypothesis(names):
+def get_hypothesis(names, test_folder):
     """
     Discription:
     Function extracts summaries from texts 
@@ -115,31 +106,35 @@ def get_hypothesis(names):
     Arguments:
     names - file with test filenames
     """
-    global sample
+    sample = {
+        "id": [],
+        "hypothesis_1": [],
+        "hypothesis_2": [],
+        "hypothesis_3": []
+    }
     count = 0
     filenames = get_filenames(names)
     for file in filenames:
-       absolute_file_path = '/home/lab/Desktop/test_10000/' + file.strip()
+       absolute_file_path = test_folder + '/' + file.strip()
        if os.path.exists(absolute_file_path):
             text = process_text(absolute_file_path)
             sample['id'].append(file)
             sample['hypothesis_1'].append(model(text, num_sentences=1))
             sample['hypothesis_2'].append(model(text, num_sentences=2))
             sample['hypothesis_3'].append(model(text, num_sentences=3))
-          append_to_sample(file, text)
-    write_to_csv()
-
+    return sample
 
 def main():
-    if len(sys.argv) != 4:
-        print("Specify correct arguments! \n[test filenames] [model name] [csv filename]")
+    if len(sys.argv) != 5:
+        print("Specify correct arguments! \n[test filenames] [model name] [csv filename] [test folder]")
         return
     names = sys.argv[1]
     bert_model_name = sys.argv[2]
     csv_filename = sys.argv[3]
+    test_folder = sys.argv[4]
     set_model(bert_model_name)
-    get_hypothesis(names)
+    id_hypothesises = get_hypothesis(names, test_folder)
+    write_to_csv(csv_filename, id_hypothesises)
 
 
 main()
-
