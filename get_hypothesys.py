@@ -19,7 +19,7 @@ argv[3] -> csv filename to save results
 """
 
 
-def set_model(bert_model):
+def set_model(model_name):
     """
     Discription:
     Function sets Summarizer custom_model = given model and custom_tokenizer = Autotokenizer.from_pretrained(given model)
@@ -28,12 +28,13 @@ def set_model(bert_model):
     bert_model - given name model
     """
     logging.set_verbosity_error()
-    custom_config = AutoConfig.from_pretrained(bert_model)
+    custom_config = AutoConfig.from_pretrained(model_name)
     custom_config.output_hidden_states = True
-    custom_tokenizer = AutoTokenizer.from_pretrained(bert_model)
-    custom_model = AutoModel.from_pretrained(bert_model, config=custom_config)
+    custom_tokenizer = AutoTokenizer.from_pretrained(model_name)
+    custom_model = AutoModel.from_pretrained(model_name, config=custom_config)
     model = Summarizer(custom_model=custom_model, custom_tokenizer=custom_tokenizer)
     return model
+
 
 def write_to_csv(csv_filename, sample):
     """
@@ -90,7 +91,7 @@ def get_filenames(names):
     Retruns: test filenames
     """
     with open(names, 'r') as f:
-      filenames = f.readlines()
+        filenames = f.readlines()
     return filenames
 
 
@@ -108,17 +109,17 @@ def get_hypothesis(names, test_folder, model):
         "hypothesis_2": [],
         "hypothesis_3": []
     }
-    count = 0
     filenames = get_filenames(names)
     for file in filenames:
-       absolute_file_path = test_folder + '/' + file.strip()
-       if os.path.exists(absolute_file_path):
-            text = process_text(absolute_file_path)
+        absolute_filepath = test_folder + '/' + file.strip()
+        if os.path.exists(absolute_filepath):
+            text = process_text(absolute_filepath)
             sample['id'].append(file)
             sample['hypothesis_1'].append(model(text, num_sentences=1))
             sample['hypothesis_2'].append(model(text, num_sentences=2))
             sample['hypothesis_3'].append(model(text, num_sentences=3))
     return sample
+
 
 def main():
     if len(sys.argv) != 5:
