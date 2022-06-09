@@ -128,7 +128,7 @@ def extract_summary(tf_idf_model, test_filenames, test_files_directory):
 
 def main():
     if len(sys.argv) != 4:
-        print("Specify correct arguments! \n [tfidf model] [test filenames] [absolute path of test files directory]\n")
+        print("Specify correct arguments! \n [tfidf model] [test filenames] [test folder]\n")
         return
     tf_idf_model = load_model(sys.argv[1])
     test_filenames = get_test_filenames(sys.argv[2])
