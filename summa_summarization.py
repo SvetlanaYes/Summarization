@@ -1,3 +1,4 @@
+# TODO: refactor and improve code
 from summa.summarizer import summarize
 import sys
 import os
