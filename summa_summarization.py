@@ -52,7 +52,6 @@ def get_hypothesis(names):
        if os.path.exists(file_path):
           text = process_text(file_path)
           append_to_sample(file, text)
-    write_to_csv()
 
 
 def main():
@@ -62,6 +61,7 @@ def main():
     names = sys.argv[1]
     csv_filename = sys.argv[2]
     get_hypothesis(names)
+    write_to_csv()
 
 
 main()
