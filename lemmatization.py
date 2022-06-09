@@ -35,8 +35,8 @@ def add_lemma_key(file_path, stopwords):
         return
     text = content_of_file['src']
     content_of_file['lemma'] = get_lemmas(text, stopwords)
-    # with open(file_path, 'w') as json_file:
-    #     json.dump(content_of_file, json_file, ensure_ascii=False)
+    with open(file_path, 'w') as json_file:
+        json.dump(content_of_file, json_file, ensure_ascii=False)
 
 
 def read_file(file):
