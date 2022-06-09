@@ -28,6 +28,17 @@ sample = {
 
 
 def process_title(text):
+
+    """
+    Discription:
+    Function gets title of given text
+
+    Arguments:
+    text - absolute path of file
+
+    Returning value: string
+    Returns: title
+    """
     processed_text = ''
     for i in range(len(text)):
         processed_text += ' '.join(text[i]) + ' '
@@ -35,9 +46,19 @@ def process_title(text):
 
 
 def process_sentence(text):
+     """
+    Discription:
+    Function gets text from file
+
+    Arguments:
+    text - absolute path of file
+
+    Returning value: string
+    Returns: text
+    """
     processed_text = ''
-    for i in range(len(text)):
-        processed_text += ''.join(text[i]) + ' '
+    for sentence in text:
+        processed_text += ''.join(sentence) + ' '
     return processed_text
 
 
@@ -81,6 +102,16 @@ def get_hypothesis(text, scores):
 
 
 def process_lemma(text):
+     """
+    Discription:
+    Function gets list of lemmatized words
+
+    Arguments:
+    text - absolute path of file
+
+    Returning value: string
+    Returns: lemmatized text
+    """
     processed_text = ''
     for word in text:
         processed_text += ''.join(word) + ' '

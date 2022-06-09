@@ -12,7 +12,7 @@ This code gets texts from given files and extracts summaries(1,2,3 sentences) us
 
 Arguments:
 
-argv[1] -> file of filenames
+argv[1] -> file with filenames
 argv[2] -> model name
 argv[3] -> csv filename to save results
 
@@ -35,7 +35,7 @@ def set_model(bert_model):
     Function sets Summarizer custom_model = given model and custom_tokenizer = Autotokenizer.from_pretrained(given model)
     
     Arguments:
-    bert_model - given name model
+    bert_model - given model(sys.argv[2])
     """
     global model
     logging.set_verbosity_error()
@@ -50,7 +50,8 @@ def write_to_csv():
     """
     Discription:
     Function to save list of exracted sentences in csv file
-    1st row - name of file
+    
+    1st row - name of the file
     2nd row - list of extracted summaries with 1 sentence
     3rd row - list of extracted summaries with 2 sentences
     4th row - list of extracted summaries with 3 sentences
@@ -65,10 +66,10 @@ def write_to_csv():
 def process_text(filename):
     """
     Discription:
-    Function processed texts in given files.
+    Function processed texts.
 
     Arguments:
-    filename - absolute path of file with text and title.
+    filename - absolute path of file.
 
     File format is json:
     ['src'] - text
@@ -109,7 +110,7 @@ def get_filenames(names):
 def get_hypothesis(names):
     """
     Discription:
-    Function extracts summaries from texts 
+    Function extracts summary from text
 
     Arguments:
     names - file with test filenames
@@ -126,7 +127,6 @@ def get_hypothesis(names):
             sample['hypothesis_2'].append(model(text, num_sentences=2))
             sample['hypothesis_3'].append(model(text, num_sentences=3))
           append_to_sample(file, text)
-    write_to_csv()
 
 
 def main():
@@ -138,6 +138,7 @@ def main():
     csv_filename = sys.argv[3]
     set_model(bert_model_name)
     get_hypothesis(names)
+    write_to_csv()
 
 
 main()

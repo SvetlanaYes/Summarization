@@ -18,7 +18,7 @@ argv[2] - count of sentences extracted from text (1,2,3)
 
 hypothesis file format is csv
 
-    1st row contains ID of file with original text
+    1st row contains ID of original text 
     2nd row contains extracted summary with 1 sentence
     3rd row contains extracted summary with 2 sentences
     4th row contains extracted summary with 3 sentences
@@ -86,7 +86,7 @@ def print_results():
 def read_csv_file(hypothesis_folder):
     """
     Discription:
-    Function reads from csv file
+    Function reads extracted hypothesises from csv file
     
     Arguments:
     hypothesis_folder - csv file
@@ -126,7 +126,6 @@ def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
                 continue
             add_new_score(score)
             count += 1
-    print_results()
 
 
 def main():
@@ -136,6 +135,7 @@ def main():
     hypothesis_folder = sys.argv[1]
     count_of_extracted_sentences = sys.argv[2]
     compute_rouge(hypothesis_folder, count_of_extracted_sentences)
-    
+    print_results()
+
 
 main()
