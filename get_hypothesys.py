@@ -18,8 +18,6 @@ argv[3] -> csv filename to save results
 
 """
 
-model = ''
-
 
 def set_model(bert_model):
     """
@@ -29,14 +27,13 @@ def set_model(bert_model):
     Arguments:
     bert_model - given name model
     """
-    global model
     logging.set_verbosity_error()
     custom_config = AutoConfig.from_pretrained(bert_model)
     custom_config.output_hidden_states = True
     custom_tokenizer = AutoTokenizer.from_pretrained(bert_model)
     custom_model = AutoModel.from_pretrained(bert_model, config=custom_config)
     model = Summarizer(custom_model=custom_model, custom_tokenizer=custom_tokenizer)
-
+    return model
 
 def write_to_csv(csv_filename, sample):
     """
@@ -81,7 +78,6 @@ def process_text(filename):
     return processed_text
 
 
-
 def get_filenames(names):
     """
     Discription:
@@ -98,7 +94,7 @@ def get_filenames(names):
     return filenames
 
 
-def get_hypothesis(names, test_folder):
+def get_hypothesis(names, test_folder, model):
     """
     Discription:
     Function extracts summaries from texts 
@@ -129,11 +125,10 @@ def main():
         print("Specify correct arguments! \n[test filenames] [model name] [csv filename] [test folder]")
         return
     names = sys.argv[1]
-    bert_model_name = sys.argv[2]
+    model = set_model(sys.argv[2])
     csv_filename = sys.argv[3]
     test_folder = sys.argv[4]
-    set_model(bert_model_name)
-    id_hypothesises = get_hypothesis(names, test_folder)
+    id_hypothesises = get_hypothesis(names, test_folder, model)
     write_to_csv(csv_filename, id_hypothesises)
 
 
