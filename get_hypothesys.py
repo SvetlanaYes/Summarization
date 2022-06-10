@@ -4,7 +4,7 @@ import json
 import os
 import csv
 import sys
-
+import utils as u
 """
 Discription:
 
@@ -79,22 +79,6 @@ def process_text(filename):
     return processed_text
 
 
-def get_filenames(names):
-    """
-    Discription:
-    Function gets test filenames from given file
-
-    Arguments:
-    names - file with test filenames
-
-    Returning value: list
-    Retruns: test filenames
-    """
-    with open(names, 'r') as f:
-        filenames = f.readlines()
-    return filenames
-
-
 def get_hypothesis(names, test_folder, model):
     """
     Discription:
@@ -109,7 +93,7 @@ def get_hypothesis(names, test_folder, model):
         "hypothesis_2": [],
         "hypothesis_3": []
     }
-    filenames = get_filenames(names)
+    filenames = u.get_filenames(names)
     for file in filenames:
         absolute_filepath = test_folder + '/' + file.strip()
         if os.path.exists(absolute_filepath):
@@ -133,4 +117,5 @@ def main():
     write_to_csv(csv_filename, id_hypothesises)
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -1,10 +1,9 @@
-# TODO: refactor and improve code
 import csv
 import os
 import json
 import sys
 from configparser import ConfigParser
-
+import utils as u
 '''
 Discription:
 This code computes % of first 3 sentences in extracted summaries in the right order
@@ -19,17 +18,6 @@ config.optionxform = lambda option: option
 config.read(file)
 
 
-def process_text(filename):
-    with open(filename, 'r') as d:
-        content_of_file = json.load(d)
-    src = content_of_file['src']
-    processed_text = []
-    for sentence in src:
-        processed_sent = " ".join(sentence[:-1]) + ' ։ '
-        processed_text.append(processed_sent)
-    return processed_text
-
-
 def compute_percent_of_first_sentences(hypothesis_folder):
     with open(hypothesis_folder, encoding='utf-8') as file:
         csvreader = csv.reader(file, delimiter='\t')
@@ -38,7 +26,7 @@ def compute_percent_of_first_sentences(hypothesis_folder):
         total_count = 0
         for row in csvreader:
             file_path = config['folder_names'][row[0][0]] + row[0].strip()
-            text = process_text(file_path)
+            text = u.process_text_to_list(file_path)
             if os.path.exists(file_path):
                 if len(text) > 0:
                     total_count += 1
@@ -67,4 +55,5 @@ def main():
     compute_percent_of_first_sentences(hypothesis_folder)
 
 
-main()
+if __name__ == "__main__":
+    main()

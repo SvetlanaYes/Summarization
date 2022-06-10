@@ -75,23 +75,6 @@ def print_results(rouge_1, rouge_2, rouge_l, count):
     print("rouge_l - ", rouge_l / count)
 
 
-def read_csv_file(hypothesis_folder):
-    """
-    Discription:
-    Function reads from csv file
-    
-    Arguments:
-    hypothesis_folder - csv file
-
-    Returning value: list
-    Returns:
-    [0] - name of file
-    [1] - hypothesis with 1 sentence
-    [2] - hypothesis with 2 sentences
-    [3] - hypothesis with 3 sentences
-    """
-
-
 def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
     """ 
     Discription:
@@ -113,11 +96,9 @@ def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
             absolute_file_path = config['folder_names'][row[0][0]] + row[0].strip()
             if os.path.exists(absolute_file_path):
                 title = get_title(absolute_file_path)
-                try:
-                    score = rouge_score(hypothesis, title)
-                except ValueError:
-                    """this error occures when original text is empty"""
+                if not hypothesis or not title:
                     continue
+                score = rouge_score(hypothesis, title)
                 rouge_1, rouge_2, rouge_l = add_new_score(score, rouge_1, rouge_2, rouge_l)
                 count += 1
     print_results(rouge_1, rouge_2, rouge_l, count)
@@ -132,4 +113,5 @@ def main():
     compute_rouge(hypothesis_folder, count_of_extracted_sentences)
 
 
-main()
+if __name__ == "__main__":
+    main()

@@ -23,8 +23,6 @@ def get_lemmas(text, stopwords):
         for w in s.words:
             if w.lemma not in stopwords:
                a.append(w.lemma)
-            else:
-                print(w.lemma)
     return a
 
 
@@ -64,4 +62,5 @@ def main():
             add_lemma_key(file_path, stopwords)
 
 
-main()
+if __name__ == "__main__":
+    main()

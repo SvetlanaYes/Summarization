@@ -1,6 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import sys
 import pickle
+import utils as u
 
 '''
 Discription:
@@ -12,12 +13,6 @@ argv[2] - file to pickle model
 '''
 
 
-def get_filenames(filepath):
-    with open(filepath, 'r') as f:
-        list_of_names = f.readlines()
-    return list_of_names
-
-
 def fit_tf_idf_vectorizer(fit_vectorizer_path, train_filenames):
     vectorizer = TfidfVectorizer()
     vectorizer.fit(train_filenames)
@@ -27,9 +22,10 @@ def fit_tf_idf_vectorizer(fit_vectorizer_path, train_filenames):
 def main():
     if len(sys.argv) != 3:
         print("Specify correct arguments! \n[train filenames] [file to pickle model] \n")
-    train_filenames = get_filenames(sys.argv[1])
+    train_filenames = u.get_filenames(sys.argv[1])
     fit_vectorizer_path = sys.argv[2]
     fit_tf_idf_vectorizer(fit_vectorizer_path, train_filenames)
 
 
-main()
+if __name__ == "__main__":
+    main()

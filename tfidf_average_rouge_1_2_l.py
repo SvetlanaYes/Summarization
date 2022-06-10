@@ -4,6 +4,7 @@ import os
 import numpy as np
 from rouge import Rouge
 import sys
+import utils as u
 
 """
 Discription:
@@ -15,7 +16,6 @@ argv[2] - file with test filenames
 argv[3] - absolute path of directory which contains lemmatized texts
 argv[4] - count of sentences to extract as summary
 """
-
 
 
 def process_title(text):
@@ -52,12 +52,6 @@ def load_model(model):
     return tf_idf_model
 
 
-def get_test_filenames(file):
-    with open(file, 'r') as f:
-        file_names = f.readlines()
-    return file_names
-
-
 def get_hypothesis(text, scores):
     hypothesis = []
     sentence = ''
@@ -71,10 +65,14 @@ def get_hypothesis(text, scores):
     return hypothesis
 
 
-def process_lemma(text):
+def process_lemmatized_text(text):
     processed_text = ''
     for word in text:
         processed_text += ''.join(word) + ' '
+    if ' : ' in processed_text:
+        processed_text = processed_text.split(" : ")[:-1]
+    else:
+        processed_text = processed_text.split(" ։ ")
     return processed_text
 
 
@@ -101,11 +99,7 @@ def extract_summary(tf_idf_model, test_filenames, test_files_directory):
         scores = []
         if len(content_of_file['src']) == 0:
             continue
-        lemma = process_lemma(content_of_file['lemma'])
-        if ' : ' in lemma:
-            lemma = lemma.split(" : ")[:-1]
-        else:
-            lemma = lemma.split(" ։ ")
+        lemma = process_lemmatized_text(content_of_file['lemma'])
         if len(lemma) == 0:
             continue
         if len(lemma[-1]) == 0:
@@ -131,10 +125,11 @@ def main():
         print("Specify correct arguments! \n [tfidf model] [test filenames] [test folder]\n")
         return
     tf_idf_model = load_model(sys.argv[1])
-    test_filenames = get_test_filenames(sys.argv[2])
+    test_filenames = u.get_filenames(sys.argv[2])
     test_files_directory = sys.argv[3]
     tf_idf_rouge_scores = extract_summary(tf_idf_model, test_filenames, test_files_directory)
     print_results(tf_idf_rouge_scores)
 
 
-main()
+if __name__ == "__main__":
+    main()
