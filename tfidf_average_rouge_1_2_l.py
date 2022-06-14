@@ -2,7 +2,6 @@ import json
 import pickle
 import os
 import numpy as np
-from rouge import Rouge
 import sys
 import utils as u
 
@@ -30,12 +29,6 @@ def process_sentence(text):
     for i in range(len(text)):
         processed_text += ''.join(text[i]) + ' '
     return processed_text
-
-
-def rouge_score(hypothesis, summary):
-    rouge = Rouge()
-    score = rouge.get_scores(hypothesis, summary)[0]
-    return score
 
 
 def print_results(sample):
@@ -78,7 +71,7 @@ def process_lemmatized_text(text):
 
 def compute_rouge(hypothesis, title, sample):
     for i, sentence in enumerate(hypothesis):
-        score = rouge_score(sentence, title)
+        score = u.rouge_score(sentence, title)
         sample[i + 1][0] += score["rouge-1"]["f"]
         sample[i + 1][1] += score["rouge-2"]["f"]
         sample[i + 1][2] += score["rouge-l"]["f"]

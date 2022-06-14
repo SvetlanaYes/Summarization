@@ -1,4 +1,12 @@
 import json
+from rouge import Rouge
+from configparser import ConfigParser
+
+
+file = 'config.ini'
+config = ConfigParser()
+config.optionxform = lambda option: option
+config.read(file)
 
 
 def get_filenames(names):
@@ -26,3 +34,13 @@ def process_text_to_list(filename):
         processed_sent = " ".join(sentence[:-1]) + ' ։ '
         processed_text.append(processed_sent)
     return processed_text
+
+
+def rouge_score(hypothesis, summary):
+    rouge = Rouge()
+    score = rouge.get_scores(hypothesis, summary)[0]
+    return score
+
+
+def get_absolute_path(row):
+    return config['folder_names'][row[0][0]] + row[0].strip()

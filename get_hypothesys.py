@@ -1,6 +1,5 @@
 from transformers import logging, AutoConfig, AutoTokenizer, AutoModel
 from summarizer import Summarizer
-import json
 import os
 import csv
 import sys
@@ -67,15 +66,10 @@ def process_text(filename):
     Returning value: string
     Returns: processed text
     """
-    with open(filename, 'r') as d:
-        content_of_file = json.load(d)
-    src = content_of_file['src']
-    processed_text = ""
-    for sentence in src:
-        if sentence[-1] == ":" or sentence[-1] == "։":
-            processed_text += ' '.join(sentence[:-1]) + ' ։ '
-        else:
-            processed_text += ' '.join(sentence) + ' ։ '
+    processed_text = u.process_text_to_list(filename)
+    processed_text_str = ''
+    for sentence in processed_text:
+        processed_text_str += ' '.join(sentence[:-1])
     return processed_text
 
 

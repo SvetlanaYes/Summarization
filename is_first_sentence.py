@@ -1,7 +1,6 @@
 import csv
 import os
 import sys
-from configparser import ConfigParser
 import utils as u
 '''
 Discription:
@@ -11,11 +10,6 @@ Arguments:
 argv[1] - folder with extracted summaries
 '''
 
-file = 'config.ini'
-config = ConfigParser()
-config.optionxform = lambda option: option
-config.read(file)
-
 
 def compute_percent_of_first_sentences(hypothesis_folder):
     with open(hypothesis_folder, encoding='utf-8') as file:
@@ -24,7 +18,7 @@ def compute_percent_of_first_sentences(hypothesis_folder):
         count = 0
         total_count = 0
         for row in csvreader:
-            file_path = config['folder_names'][row[0][0]] + row[0].strip()
+            file_path = u.get_absolute_path(row)
             text = u.process_text_to_list(file_path)
             text = text[:3]
             if os.path.exists(file_path):

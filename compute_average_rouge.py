@@ -4,6 +4,8 @@ import json
 from rouge import Rouge
 import sys
 from configparser import ConfigParser
+import utils as u
+
 
 """
 Discription:
@@ -98,7 +100,7 @@ def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
                 title = get_title(absolute_file_path)
                 if not hypothesis or not title:
                     continue
-                score = rouge_score(hypothesis, title)
+                score = u.rouge_score(hypothesis, title)
                 rouge_1, rouge_2, rouge_l = add_new_score(score, rouge_1, rouge_2, rouge_l)
                 count += 1
     print_results(rouge_1, rouge_2, rouge_l, count)
