@@ -69,7 +69,7 @@ def process_text(filename):
     processed_text = u.process_text_to_list(filename)
     processed_text_str = ''
     for sentence in processed_text:
-        processed_text_str += ' '.join(sentence[:-1])
+        processed_text_str += ''.join(sentence)
     return processed_text
 
 
