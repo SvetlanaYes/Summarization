@@ -70,11 +70,7 @@ def process_text(filename):
     processed_text_str = ''
     for sentence in processed_text:
         processed_text_str += ''.join(sentence)
-<<<<<<< HEAD
     return processed_text_str
-=======
-    return processed_text
->>>>>>> d578531c1939200ad3f87d8071f164430410a07c
 
 
 def get_hypothesis(names, test_folder, model):
