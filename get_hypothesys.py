@@ -69,8 +69,8 @@ def process_text(filename):
     processed_text = u.process_text_to_list(filename)
     processed_text_str = ''
     for sentence in processed_text:
-        processed_text_str += ' '.join(sentence[:-1])
-    return processed_text
+        processed_text_str += ''.join(sentence)
+    return processed_text_str
 
 
 def get_hypothesis(names, test_folder, model):
@@ -88,6 +88,7 @@ def get_hypothesis(names, test_folder, model):
         "hypothesis_3": []
     }
     filenames = u.get_filenames(names)
+    count = 0
     for file in filenames:
         absolute_filepath = test_folder + '/' + file.strip()
         if os.path.exists(absolute_filepath):
@@ -96,6 +97,9 @@ def get_hypothesis(names, test_folder, model):
             sample['hypothesis_1'].append(model(text, num_sentences=1))
             sample['hypothesis_2'].append(model(text, num_sentences=2))
             sample['hypothesis_3'].append(model(text, num_sentences=3))
+        count += 1
+        if count > 99 and count % 100 == 0:
+            print(count)
     return sample
 
 
