@@ -24,14 +24,15 @@ def compute_percent_of_first_sentences(hypothesis_folder):
                 if len(text) > 0:
                     total_count += 1
                     matches_top_sentences = True
-                    hypothesis = row[3].split(" ։ ")
-                    # hypothesis = row[3].split(" ։") for summa_summrizer
+                    hypothesis = row[3].replace(":", "։").split(" ։ ")
+                    # hypothesis = row[3].replace(":", "։").split("\n") for tf-idf
+                    # hypothesis = row[3].replace(":", "։").split(" ։") for summa_summrizer
                     if len(text) < len(hypothesis):
                         continue
                     else:
                         for i, sentence in enumerate(hypothesis):
-                            processed_summary = text[i].replace("։", ":").strip()[:-1]
-                            processed_hypothesis = sentence.replace("։", ":").strip()
+                            processed_summary = text[i].replace(":", "։").strip()
+                            processed_hypothesis = sentence.strip()
                             if (processed_hypothesis not in processed_summary
                                     and processed_summary not in processed_hypothesis):
                                 matches_top_sentences = False
