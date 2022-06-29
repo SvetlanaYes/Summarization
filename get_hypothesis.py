@@ -88,18 +88,13 @@ def get_hypothesis(names, test_folder, model):
         "hypothesis_3": []
     }
     filenames = u.get_filenames(names)
-    count = 0
     for file in filenames:
         absolute_filepath = test_folder + '/' + file.strip()
         if os.path.exists(absolute_filepath):
             text = process_text(absolute_filepath)
             sample['id'].append(file)
-            sample['hypothesis_1'].append(model(text, num_sentences=1))
-            sample['hypothesis_2'].append(model(text, num_sentences=2))
-            sample['hypothesis_3'].append(model(text, num_sentences=3))
-        count += 1
-        if count > 99 and count % 100 == 0:
-            print(count)
+            for i in range(1, 4):
+                sample['hypothesis_'+str(i)].append(model(text, num_sentences=i))
     return sample
 
 
