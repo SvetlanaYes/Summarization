@@ -75,7 +75,6 @@ def print_results(rouge_1, rouge_2, rouge_l, count):
     print("rouge_1 - ", rouge_1 / count)
     print("rouge_2 - ", rouge_2 / count)
     print("rouge_l - ", rouge_l / count)
-    print(count)
 
 
 def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
@@ -103,9 +102,6 @@ def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
                     continue
                 score = u.rouge_score(hypothesis, title)
                 rouge_1, rouge_2, rouge_l = add_new_score(score, rouge_1, rouge_2, rouge_l)
-                count += 1
-                if count > 99 and count % 100 == 0:
-                    print(rouge_1, rouge_2, rouge_l)
     print_results(rouge_1, rouge_2, rouge_l, count)
 
 
