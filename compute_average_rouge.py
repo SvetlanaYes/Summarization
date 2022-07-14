@@ -102,6 +102,8 @@ def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
                     continue
                 score = u.rouge_score(hypothesis, title)
                 rouge_1, rouge_2, rouge_l = add_new_score(score, rouge_1, rouge_2, rouge_l)
+            else:
+                print("sssss")
     print_results(rouge_1, rouge_2, rouge_l, count)
 
 

@@ -1,5 +1,7 @@
 from transformers import logging, AutoConfig, AutoTokenizer, AutoModel
 from summarizer import Summarizer
+from summarizer.text_processors.sentence_handler import SentenceHandler
+from spacy.lang.hy import Armenian
 import os
 import csv
 import sys
@@ -31,7 +33,9 @@ def set_model(model_name):
     custom_config.output_hidden_states = True
     custom_tokenizer = AutoTokenizer.from_pretrained(model_name)
     custom_model = AutoModel.from_pretrained(model_name, config=custom_config)
-    model = Summarizer(custom_model=custom_model, custom_tokenizer=custom_tokenizer)
+    model = Summarizer(custom_model=custom_model,
+                       custom_tokenizer=custom_tokenizer,
+                       sentence_handler=SentenceHandler(Armenian))
     return model
 
 
