@@ -1,0 +1,8 @@
+numpy==1.13.3
+pattern==3.6
+rouge==1.0.1
+scikit_learn==1.1.1
+scipy==0.19.1
+stanza==1.3.0
+transformers==4.18.0
+bert-extractive-summarizer==0.10.1
