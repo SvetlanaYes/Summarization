@@ -101,9 +101,8 @@ def compute_rouge(hypothesis_folder, count_of_extracted_sentences):
                 if not hypothesis or not title:
                     continue
                 score = u.rouge_score(hypothesis, title)
+                count += 1
                 rouge_1, rouge_2, rouge_l = add_new_score(score, rouge_1, rouge_2, rouge_l)
-            else:
-                print("sssss")
     print_results(rouge_1, rouge_2, rouge_l, count)
 
 
